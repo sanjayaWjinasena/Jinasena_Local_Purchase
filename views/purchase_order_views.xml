@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--
+        Fix: "Confirm Order" button never appears on Local Credit RFQs.
+
+        Background
+        ==========
+        The Studio inherit "Odoo Studio: purchase.order.form
+        customization" (view id 2409, priority 95) wraps the standard
+        button_confirm with a compound `invisible` expression that
+        includes two clauses which stay TRUE for the entire normal
+        Local-Credit lifecycle until the user manually clicks two
+        Studio buttons in sequence ("Receive Quotation" → "Update
+        PR"):
+
+            x_studio_receive_status == 'Pending'
+            x_studio_pr_update      == True
+
+        On PO-00070 (Local, credit-terms, derived from Approved
+        PR/2026/00057) both clauses were TRUE, hiding button_confirm.
+        The user could not confirm the RFQ.
+
+        Why relaxing both is safe
+        =========================
+        bugfix_purchase v0.7 already:
+
+        - Chains the "Update PR Status in PO" server action (id 991)
+          into button_confirm (see bugfix_purchase/models/
+          purchase_order.py::_bugfix_purchase_run_update_pr_on_confirm)
+          — so hitting Confirm now performs the PR sync in the same
+          transaction. The x_studio_pr_update gate exists to force a
+          manual sync BEFORE confirm; that gate is now redundant.
+
+        - Hides the manual "Update PR" button (action 991) via
+          purchase.order._get_view — so the two-click workflow is
+          gone from the UI. Leaving the confirm gate would surface a
+          dead-end (Confirm hidden, Update PR hidden).
+
+        The x_studio_receive_status gate encoded "you must click
+        Receive Quotation first, which requires uploading a supplier
+        quotation PDF". For the Local Credit flow that PDF is not a
+        business requirement (the vendor is on account terms; there
+        is no LC-style paper trail). Dropping the gate lets Local
+        Credit POs confirm without the PDF; Import POs are not
+        affected because bugfix_purchase's button_confirm override
+        applies to all POs and its zero-price guard already covers
+        the "not really ready" case.
+
+        Approach
+        ========
+        Additive: inherit purchase.purchase_order_form at a priority
+        higher than the Studio view's 95, and rewrite the invisible
+        expression on //header/button[@name='button_confirm'] to drop
+        the two now-redundant clauses. Everything else in the
+        Studio expression is preserved verbatim (state gate,
+        subcontracting gates, header-charge gates, so_pr gate).
+
+        No Studio record is edited. The Studio view keeps its own
+        invisible expression; ours runs later (higher priority) on
+        the same merged arch. If bugfix_purchase or the Studio
+        customization is ever removed, this module's install will
+        still succeed (view inherit target is the standard
+        purchase.purchase_order_form, not the Studio inherit) — the
+        rewrite will just have no additional effect because the
+        clauses it targets weren't there.
+    -->
+
+    <record id="jlp_view_po_form_show_confirm" model="ir.ui.view">
+        <field name="name">jinasena_local_purchase.po.form.show.confirm</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="priority">200</field>
+        <field name="arch" type="xml">
+
+            <!--
+                Two button_confirm elements exist in the Studio arch —
+                one for state='sent' (position 1 in the header), one
+                for state='draft' (position 2). Studio added the
+                second variant so the button could carry different
+                effect/help attributes in the two states. We target
+                both by name; the state gate inside each invisible
+                expression is what disambiguates them at render time.
+
+                Invisible expression MUST be a single line — Odoo's
+                Python-eval on modifier attrs treats embedded newlines
+                as syntax errors.
+            -->
+
+            <xpath expr="//header/button[@name='button_confirm']" position="attributes">
+                <attribute name="invisible">state != 'sent' or x_studio_so_pr or x_studio_create_header_charges or x_studio_allocate_header_charges or (x_studio_subcontracting_pr and x_studio_subcontracting_so_status_1 not in ('sale', 'done')) or (x_studio_subcontracting_pr and not x_studio_specifications)</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
