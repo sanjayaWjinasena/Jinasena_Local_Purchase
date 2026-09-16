@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Jinasena - Local Purchase',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1.0.1',
     'summary': 'Bug fixes for the Local Purchase (Credit) workflow',
     'author': 'Jinasena Agricultural Machinery (Pvt) Ltd.',
     'category': 'Purchases',
@@ -13,7 +13,7 @@
     # x_studio_receive_status=='Pending', so the button never appears
     # in the first place. This module supplies the missing view-inherit
     # that drops those two now-redundant clauses.
-    'depends': ['base_setup', 'purchase', 'bugfix_purchase'],
+    'depends': ['base_setup', 'purchase', 'BugFix-Purchase'],
     'data': [
         'views/purchase_order_views.xml',
     ],
