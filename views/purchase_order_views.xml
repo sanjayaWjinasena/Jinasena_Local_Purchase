@@ -100,6 +100,18 @@
                 <attribute name="invisible">state != 'sent' or x_studio_receive_status != 'Received' or x_studio_so_pr or x_studio_create_header_charges or x_studio_allocate_header_charges or (x_studio_subcontracting_pr and x_studio_subcontracting_so_status_1 not in ('sale', 'done')) or (x_studio_subcontracting_pr and not x_studio_specifications)</attribute>
             </xpath>
 
+            <!--
+                v17.0.1.0.4: the draft-state Confirm Order (id draft_confirm) gets
+                the same receive gate, so no RFQ can be confirmed before
+                "Receive Quotation" is clicked. Receive Quotation only appears on
+                a sent RFQ, so the flow is always: send -> upload quotation ->
+                Receive Quotation -> Confirm Order. Rest of the expression is the
+                Clear-DB one, unchanged.
+            -->
+            <xpath expr="//header/button[@id='draft_confirm']" position="attributes">
+                <attribute name="invisible">((state != 'draft') or (x_studio_so_pr == True) or (x_studio_pr_update == True) or (x_studio_create_header_charges == True) or (x_studio_allocate_header_charges == True) or ((x_studio_subcontracting_pr == True) and (x_studio_subcontracting_so_status_1 not in ['sale', 'done'])) or ((x_studio_subcontracting_pr == True) and (set(x_studio_specifications).intersection([]))) or ((x_studio_subcontracting_pr == True) and (set(x_studio_project_photos).intersection([])))) or (x_studio_receive_status != 'Received')</attribute>
+            </xpath>
+
         </field>
     </record>
 

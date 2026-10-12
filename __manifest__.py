@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Jinasena : SubModule : Purchase : Local Purchase',
-    'version': '17.0.1.0.3',
+    'version': '17.0.1.0.4',
     'summary': 'Bug fixes for the Local Purchase (Credit) workflow',
     'author': 'Jinasena Agricultural Machinery (Pvt) Ltd.',
     'category': 'Purchases',
