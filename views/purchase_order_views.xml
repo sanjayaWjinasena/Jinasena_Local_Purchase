@@ -87,8 +87,17 @@
                 as syntax errors.
             -->
 
+            <!--
+                v17.0.1.0.3 (test log 117): the receive-status gate is back.
+                Confirm Order on a sent RFQ stays hidden until
+                "Receive Quotation" (BugFix-Purchase) marks it Received;
+                that button only appears once a quotation copy is uploaded.
+                Written as != 'Received' so a PO with no status set cannot skip it.
+                The x_studio_pr_update gate stays dropped: Update PR runs
+                inside button_confirm (BugFix-Purchase v0.7).
+            -->
             <xpath expr="//header/button[@name='button_confirm']" position="attributes">
-                <attribute name="invisible">state != 'sent' or x_studio_so_pr or x_studio_create_header_charges or x_studio_allocate_header_charges or (x_studio_subcontracting_pr and x_studio_subcontracting_so_status_1 not in ('sale', 'done')) or (x_studio_subcontracting_pr and not x_studio_specifications)</attribute>
+                <attribute name="invisible">state != 'sent' or x_studio_receive_status != 'Received' or x_studio_so_pr or x_studio_create_header_charges or x_studio_allocate_header_charges or (x_studio_subcontracting_pr and x_studio_subcontracting_so_status_1 not in ('sale', 'done')) or (x_studio_subcontracting_pr and not x_studio_specifications)</attribute>
             </xpath>
 
         </field>
