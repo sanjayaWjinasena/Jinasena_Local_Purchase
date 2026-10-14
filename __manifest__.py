@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': 'Jinasena : SubModule : Purchase : Local Purchase',
     'version': '17.0.1.0.4',
