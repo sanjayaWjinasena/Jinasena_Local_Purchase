@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <!--
         Fix: "Confirm Order" button never appears on Local Credit RFQs.
 
@@ -65,7 +64,6 @@
         rewrite will just have no additional effect because the
         clauses it targets weren't there.
     -->
-
     <record id="jlp_view_po_form_show_confirm" model="ir.ui.view">
         <field name="name">jinasena_local_purchase.po.form.show.confirm</field>
         <field name="model">purchase.order</field>
@@ -114,5 +112,4 @@
 
         </field>
     </record>
-
 </odoo>
