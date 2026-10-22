@@ -16,5 +16,4 @@
     "data": [
         "views/purchase_order_views.xml",
     ],
-    "application": False,
 }
