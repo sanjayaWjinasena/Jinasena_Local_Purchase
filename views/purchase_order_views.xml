@@ -96,8 +96,13 @@
                 The x_studio_pr_update gate stays dropped: Update PR runs
                 inside button_confirm (BugFix-Purchase v0.7).
             -->
+            <!--
+                v17.0.1.0.5 (bug sheet Purchasing row 8, 22/Oct): RFQs from a Cash Purchase
+                (Created From CP No set) need no quotation upload and no "Receive Quotation"
+                step, so the receive gate does not apply to them.
+            -->
             <xpath expr="//header/button[@name='button_confirm']" position="attributes">
-                <attribute name="invisible">state != 'sent' or x_studio_receive_status != 'Received' or x_studio_so_pr or x_studio_create_header_charges or x_studio_allocate_header_charges or (x_studio_subcontracting_pr and x_studio_subcontracting_so_status_1 not in ('sale', 'done')) or (x_studio_subcontracting_pr and not x_studio_specifications)</attribute>
+                <attribute name="invisible">state != 'sent' or (x_studio_receive_status != 'Received' and not x_studio_created_from_cp_no) or x_studio_so_pr or x_studio_create_header_charges or x_studio_allocate_header_charges or (x_studio_subcontracting_pr and x_studio_subcontracting_so_status_1 not in ('sale', 'done')) or (x_studio_subcontracting_pr and not x_studio_specifications)</attribute>
             </xpath>
 
             <!--
@@ -109,7 +114,7 @@
                 Clear-DB one, unchanged.
             -->
             <xpath expr="//header/button[@id='draft_confirm']" position="attributes">
-                <attribute name="invisible">((state != 'draft') or (x_studio_so_pr == True) or (x_studio_pr_update == True) or (x_studio_create_header_charges == True) or (x_studio_allocate_header_charges == True) or ((x_studio_subcontracting_pr == True) and (x_studio_subcontracting_so_status_1 not in ['sale', 'done'])) or ((x_studio_subcontracting_pr == True) and (set(x_studio_specifications).intersection([]))) or ((x_studio_subcontracting_pr == True) and (set(x_studio_project_photos).intersection([])))) or (x_studio_receive_status != 'Received')</attribute>
+                <attribute name="invisible">((state != 'draft') or (x_studio_so_pr == True) or (x_studio_pr_update == True) or (x_studio_create_header_charges == True) or (x_studio_allocate_header_charges == True) or ((x_studio_subcontracting_pr == True) and (x_studio_subcontracting_so_status_1 not in ['sale', 'done'])) or ((x_studio_subcontracting_pr == True) and (set(x_studio_specifications).intersection([]))) or ((x_studio_subcontracting_pr == True) and (set(x_studio_project_photos).intersection([])))) or (x_studio_receive_status != 'Received' and not x_studio_created_from_cp_no)</attribute>
             </xpath>
 
         </field>
