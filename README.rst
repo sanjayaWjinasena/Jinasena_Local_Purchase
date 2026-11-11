@@ -5,8 +5,8 @@ Bug fixes for the Local Purchase (Credit) workflow
 
 BugFix-Purchase already moves the "Update PR" step into Confirm and hides
 the manual Update PR button, but the Studio view on the purchase order
-form still only showed Confirm when ``x_studio_pr_update`` was set and
-``x_studio_receive_status`` was 'Pending', so Confirm never appeared.
+form still only showed Confirm when ``pr_update`` was set and
+``receive_status`` was 'Pending', so Confirm never appeared.
 This module's view inheritance removes those two outdated conditions.
 
 Information
